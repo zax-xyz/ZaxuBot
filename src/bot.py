@@ -3,7 +3,7 @@ from datetime import datetime
 
 from twitchio.ext import commands
 
-from config import auth, config
+from cfg import auth, config
 from src.utils import colored, current_time, plural
 
 

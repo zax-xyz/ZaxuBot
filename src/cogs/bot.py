@@ -1,6 +1,6 @@
 from twitchio.ext import commands
 
-from config import config
+from cfg import config
 
 
 class Module:
