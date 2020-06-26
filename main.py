@@ -1,14 +1,19 @@
 from src import bot
 
-if __name__ == "__main__":
-    bot = bot.Bot()
+
+def main():
+    _bot = bot.Bot()
 
     try:
-        bot.loop.run_until_complete(bot.start())
+        _bot.loop.run_until_complete(_bot.start())
     except KeyboardInterrupt:
         try:
-            bot.loop.run_until_complete(bot.pbs_db.close())
+            _bot.loop.run_until_complete(_bot.pbs_db.close())
         except (AttributeError, ValueError):
             pass
     finally:
-        bot._ws.teardown()
+        _bot._ws.teardown()
+
+
+if __name__ == "__main__":
+    main()
