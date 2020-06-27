@@ -7,10 +7,8 @@ def main():
     try:
         _bot.loop.run_until_complete(_bot.start())
     except KeyboardInterrupt:
-        try:
-            _bot.loop.run_until_complete(_bot.pbs_db.close())
-        except (AttributeError, ValueError):
-            pass
+        for db in _bot.dbs.values():
+            _bot.loop.run_until_complete(db.close())
     finally:
         _bot._ws.teardown()
 

@@ -15,6 +15,8 @@ class Bot(commands.Bot):
             nick=auth.username, initial_channels=config.channels
         )
 
+        self.dbs = {}
+
         for module in config.modules:
             self.load_module(module)
 
@@ -46,5 +48,8 @@ class Bot(commands.Bot):
             colored(username, 'blue', attrs=['bold']),
             msg
         ))
+
+        if username == self.nick:
+            return
 
         await self.handle_commands(message)

@@ -15,8 +15,8 @@ class PBs:
 
     async def create_table(self):
         '''Create the pb SQL table if it doesn't already exist'''
-        self.bot.pbs_db = await aiosqlite.connect('pbs.db')
-        self.db = self.bot.pbs_db
+        self.db = await aiosqlite.connect('pbs.db')
+        self.bot.dbs['pbs'] = self.db
 
         async with self.db.cursor() as cursor:
             await cursor.execute('''CREATE TABLE IF NOT EXISTS times (
@@ -144,4 +144,9 @@ def prepare(bot):
 
 
 def breakdown(bot):
-    bot.loop.create_task(bot.pbs_db.close())
+    bot.loop.create_task(close_db(bot))
+
+
+async def close_db(bot):
+    await bot.dbs['pbs'].close()
+    del bot.dbs['pbs']
