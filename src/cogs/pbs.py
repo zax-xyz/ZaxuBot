@@ -8,6 +8,8 @@ from src.utils import is_mod
 
 class PBs:
 
+    category_pat = re.compile(r'\[(.+?)\]')
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -26,24 +28,36 @@ class PBs:
 
             await self.db.commit()
 
-    async def get_game(self, ctx):
-        '''Gets the currently playing game from a live stream'''
-        stream = await ctx.channel.get_stream()
-        if stream is None:
-            return None, None
+    async def get_channel_info(self, ctx):
+        '''Gets information about a channel from a context object'''
+        users = await self.bot.get_users(ctx.channel.name)
+        channel_id = users[0].id
 
-        name = stream['user_name']
-        return name, await self.get_game_name(stream['game_id'])
+        channel = await self.bot.http.request(
+            'GET', '/channels', params=[
+                ('broadcaster_id', channel_id),
+            ],
+        )
 
-    async def get_game_name(self, game_id):
-        '''Given a numeric game id, fetches the name of the game'''
-        game = await self.bot.get_games(game_id)
-        return game[0]['name']
+        return channel[0]
 
     async def get_display_name(self, username):
         '''Gets a user's display name from their username'''
         user = await self.bot.get_users(username)
         return user[0].display_name
+
+    async def get_category(self, title):
+        '''
+        Gets a speedrun category from the stream title
+
+        Assumes the title begins with the category in square brackets - [CAT]
+        '''
+        category = self.category_pat.match(title)
+        if category is None:
+            return None
+
+        category = category[1]
+        return category
 
     @commands.command(name='pb', aliases=['getpb'])
     async def get_pb(self, ctx, *, game=None):
@@ -53,20 +67,17 @@ class PBs:
         Uses the current stream game if none given
         '''
         if game is None:
-            channel, game = await self.get_game(ctx)
-            if game is None:
-                # Channel not live
-                return await ctx.send(
-                    "Command doesn't work by itself when not live yet (try "
-                    "specifying the game)"
-                )
+            channel = await self.get_channel_info(ctx)
+            game = channel['game_name']
+            channel = channel['broadcaster_name']
         else:
             channel = await self.get_display_name(ctx.channel.name)
 
         # Get PB from database
         async with self.db.cursor() as cursor:
-            await cursor.execute('SELECT game, time FROM times WHERE game = ?',
-                                 (game,))
+            await cursor.execute(
+                'SELECT game, time FROM times WHERE game = ?', (game,)
+            )
 
             pb = await cursor.fetchone()
             if pb is None:
@@ -84,19 +95,12 @@ class PBs:
 
         Uses the current stream game if none given.
         '''
-        game = game or (await self.get_game(ctx))[1]
-        if game is None:
-            # Channel not live
-            return await ctx.send(
-                "Command doesn't work by itself when not live yet (try "
-                "specifying the game)"
-            )
+        game = game or (await self.get_channel_info(ctx))['game_name']
 
         # Add or replace PB in database
         async with self.db.cursor() as cursor:
             await cursor.execute(
-                'REPLACE INTO times (game, time) VALUES (?, ?)',
-                (game, time)
+                'REPLACE INTO times (game, time) VALUES (?, ?)', (game, time)
             )
             await self.db.commit()
 
@@ -114,18 +118,13 @@ class PBs:
 
         Uses the current stream game if none given.
         '''
-        game = game or (await self.get_game(ctx))[1]
-        if game is None:
-            # Channel not live
-            return await ctx.send(
-                "Command doesn't work by itself when not live yet (try "
-                "specifying the game)"
-            )
+        game = game or (await self.get_channel_info(ctx))['game_name']
 
         # Delete PB from database
         async with self.db.cursor() as cursor:
-            await cursor.execute('SELECT game FROM times WHERE game = ?',
-                                 (game,))
+            await cursor.execute(
+                'SELECT game FROM times WHERE game = ?', (game,)
+            )
 
             row = await cursor.fetchone()
             if row is None:
