@@ -1,16 +1,16 @@
-from src import bot
+from src.bot import Bot
 
 
 def main():
-    _bot = bot.Bot()
+    bot = Bot()
 
     try:
-        _bot.loop.run_until_complete(_bot.start())
+        bot.loop.run_until_complete(bot.start())
     except KeyboardInterrupt:
-        for db in _bot.dbs.values():
-            _bot.loop.run_until_complete(db.close())
+        for db in bot.dbs.values():
+            bot.loop.run_until_complete(db.close())
     finally:
-        _bot._ws.teardown()
+        bot._ws.teardown()
 
 
 if __name__ == "__main__":
