@@ -1,4 +1,5 @@
 import asyncio
+import re
 
 import aiosqlite
 from twitchio.ext import commands
