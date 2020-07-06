@@ -1,7 +1,7 @@
 prefix = 'z!'
 
 channels = [
-    'zaxuwu_',
+    'z_ax',
 ]
 
 modules = [
