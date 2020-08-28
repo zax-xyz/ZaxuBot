@@ -10,7 +10,7 @@ from src.utils import colored, current_time, plural
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
-            prefix='z!', irc_token=auth.irc_token,
+            prefix=config.prefix, irc_token=auth.irc_token,
             client_secret=auth.client_secret, client_id=auth.client_id,
             nick=auth.username, initial_channels=config.channels
         )
