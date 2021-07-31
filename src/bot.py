@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 
 from twitchio.ext import commands
@@ -10,9 +9,12 @@ from src.utils import colored, current_time, plural
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
-            prefix=config.prefix, irc_token=auth.irc_token,
-            client_secret=auth.client_secret, client_id=auth.client_id,
-            nick=auth.username, initial_channels=config.channels
+            prefix=config.prefix,
+            irc_token=auth.irc_token,
+            client_secret=auth.client_secret,
+            client_id=auth.client_id,
+            nick=auth.username,
+            initial_channels=config.channels,
         )
 
         self.dbs = {}
@@ -34,20 +36,20 @@ class Bot(commands.Bot):
         return f"{days}, {hours}, {minutes}, {seconds}"
 
     async def event_ready(self):
-        print('Bot ready')
-        print('Username:', auth.username)
-        print('Channels:', ', '.join(config.channels))
+        print("Bot ready")
+        print("Username:", auth.username)
+        print("Channels:", ", ".join(config.channels))
 
         self.start_time = datetime.now()
 
     async def event_message(self, message):
         username = message.author.name
         msg = message.content
-        print('{}  {}: {}'.format(
-            current_time(),
-            colored(username, 'blue', attrs=['bold']),
-            msg
-        ))
+        print(
+            "{}  {}: {}".format(
+                current_time(), colored(username, "blue", attrs=["bold"]), msg
+            )
+        )
 
         if username == self.nick:
             return
