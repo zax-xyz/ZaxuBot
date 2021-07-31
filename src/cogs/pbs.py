@@ -52,8 +52,7 @@ class PBs:
         return user[0].display_name
 
     async def get_category(self, title):
-        """
-        Gets a speedrun category from the stream title
+        """Gets a speedrun category from the stream title
 
         Assumes the title begins with the category in square brackets - [CAT]
         """
@@ -66,8 +65,7 @@ class PBs:
 
     @commands.command(name="pb", aliases=["getpb"])
     async def get_pb(self, ctx, *, game=None):
-        """
-        Get the streamer's PB for a game.
+        """Get the streamer's PB for a game.
 
         Uses the current stream game if none given
         """
@@ -95,8 +93,7 @@ class PBs:
     @commands.check(is_mod)
     @commands.command(name="setpb")
     async def set_pb(self, ctx, time, *, game=None):
-        """
-        Sets the streamer's PB for a game
+        """Sets the streamer's PB for a game
 
         Uses the current stream game if none given.
         """
@@ -119,8 +116,7 @@ class PBs:
     @commands.check(is_mod)
     @commands.command(name="delpb", aliases=["deletepb"])
     async def delete_pb(self, ctx, *, game=None):
-        """
-        Deletes the streamer's PB for a game
+        """Deletes the streamer's PB for a game
 
         Uses the current stream game if none given.
         """
@@ -145,8 +141,7 @@ class PBs:
 
     @commands.command(name="wr", aliases=["getwr"])
     async def get_wr(self, ctx, *, game=None):
-        """
-        Get the current WR for a game
+        """Get the current WR for a game
 
         Uses the current stream game if none given.
         """
