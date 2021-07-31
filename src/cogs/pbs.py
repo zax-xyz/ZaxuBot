@@ -185,13 +185,8 @@ def prepare(bot):
 
 def breakdown(bot):
     bot.loop.create_task(close_db(bot))
-    bot.loop.create_task(close_srcom_client(bot))
 
 
 async def close_db(bot):
     await bot.dbs["pbs"].close()
     del bot.dbs["pbs"]
-
-
-async def close_srcom_client(bot):
-    await bot.srcom_client.close()
