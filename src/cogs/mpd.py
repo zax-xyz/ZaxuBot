@@ -17,7 +17,7 @@ class Module:
             client.password(mpd_auth.password)
 
             song = client.currentsong()
-        except:
+        except Exception:
             return await ctx.send("Error getting current song")
         finally:
             client.close()
