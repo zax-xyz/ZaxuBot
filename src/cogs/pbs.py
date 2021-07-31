@@ -155,7 +155,7 @@ class PBs:
             if record is None:
                 return await ctx.send(f"World record for {game} not found")
 
-            category = await srcom.Category.from_id(default_cat, client.http)
+            category = await srcom.Category.from_id(default_cat, client)
             variables = await srcom_game.variables()
             subcategories = [
                 var
