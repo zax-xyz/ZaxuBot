@@ -1,7 +1,6 @@
 from twitchio.ext import commands
 from mpd import MPDClient
 
-from cfg import config
 from cfg import mpd_auth
 
 
