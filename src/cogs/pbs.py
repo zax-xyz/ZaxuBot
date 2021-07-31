@@ -1,6 +1,7 @@
 import re
 
 import aiosqlite
+import srcom
 from twitchio.ext import commands
 
 from src.utils import is_mod
@@ -142,6 +143,46 @@ class PBs:
 
         await ctx.send(f"Deleted PB for {game}")
 
+    @commands.command(name="wr", aliases=["getwr"])
+    async def get_wr(self, ctx, *, game=None):
+        """
+        Get the current WR for a game
+
+        Uses the current stream game if none given.
+        """
+        game = game or (await self.get_channel_info(ctx))["game_name"]
+
+        async with srcom.Client() as client:
+            srcom_game = await client.get_game(name=game)
+            default_cat = srcom_game.default_category
+
+            record = await srcom_game.record()
+            if record is None:
+                return await ctx.send(f"World record for {game} not found")
+
+            category = await srcom.Category.from_id(default_cat, client.http)
+            variables = await srcom_game.variables()
+            subcategories = [
+                var
+                for var in variables
+                if var.is_subcategory and var._category == category.id
+            ]
+
+            runner = await record.player()
+            await ctx.send(
+                "The world record for {} ({}{}) is {} by {}. {}".format(
+                    game,
+                    category.name,
+                    ", ".join(
+                        [""]
+                        + [v.values[v.default]["label"] for v in subcategories]
+                    ),
+                    record.time[:-3] if "." in record.time else record.time,
+                    runner.name,
+                    record.link,
+                )
+            )
+
 
 def prepare(bot):
     bot.add_cog(PBs(bot))
@@ -149,8 +190,13 @@ def prepare(bot):
 
 def breakdown(bot):
     bot.loop.create_task(close_db(bot))
+    bot.loop.create_task(close_srcom_client(bot))
 
 
 async def close_db(bot):
     await bot.dbs["pbs"].close()
     del bot.dbs["pbs"]
+
+
+async def close_srcom_client(bot):
+    await bot.srcom_client.close()
