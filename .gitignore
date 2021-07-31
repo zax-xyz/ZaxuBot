@@ -4,3 +4,4 @@ venv
 cfg/auth.py
 cfg/mpd_auth.py
 pbs.db
+.vscode
