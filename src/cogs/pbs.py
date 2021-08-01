@@ -156,7 +156,7 @@ class PBs:
             subcategories = [var for var in variables if var.is_subcategory]
             params = {f"var-{var.id}": var.default for var in subcategories}
 
-            record = await srcom_game.record(category.id, False, params)
+            record = await category.record(False, params)
             if record is None:
                 return await ctx.send(f"World record for {game} not found")
 
