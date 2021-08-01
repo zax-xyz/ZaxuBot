@@ -165,11 +165,10 @@ class PBs:
 
             runner = await record.player()
             await ctx.send(
-                "The world record for {} ({}{}) is {} by {}. {}".format(
+                "The world record for {} ({}) is {} by {}. {}".format(
                     game,
-                    category.name,
                     ", ".join(
-                        [""]
+                        [category.name]
                         + [v.values[v.default]["label"] for v in subcategories]
                     ),
                     record.time[:-3] if "." in record.time else record.time,
