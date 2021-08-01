@@ -152,12 +152,8 @@ class PBs:
             default_cat = srcom_game.default_category
 
             category = await srcom.Category.from_id(default_cat, client)
-            variables = await srcom_game.variables()
-            subcategories = [
-                var
-                for var in variables
-                if var.is_subcategory and var._category == category.id
-            ]
+            variables = await category.variables()
+            subcategories = [var for var in variables if var.is_subcategory]
             params = {f"var-{var.id}": var.default for var in subcategories}
 
             record = await srcom_game.record(category.id, False, params)
