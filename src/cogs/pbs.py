@@ -151,10 +151,6 @@ class PBs:
             srcom_game = await client.get_game(name=game)
             default_cat = srcom_game.default_category
 
-            record = await srcom_game.record()
-            if record is None:
-                return await ctx.send(f"World record for {game} not found")
-
             category = await srcom.Category.from_id(default_cat, client)
             variables = await srcom_game.variables()
             subcategories = [
@@ -162,6 +158,11 @@ class PBs:
                 for var in variables
                 if var.is_subcategory and var._category == category.id
             ]
+            params = {f"var-{var.id}": var.default for var in subcategories}
+
+            record = await srcom_game.record(category.id, False, params)
+            if record is None:
+                return await ctx.send(f"World record for {game} not found")
 
             runner = await record.player()
             await ctx.send(
