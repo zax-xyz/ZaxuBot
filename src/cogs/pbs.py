@@ -24,9 +24,9 @@ class PBs:
         async with self.db.cursor() as cursor:
             await cursor.execute(
                 """CREATE TABLE IF NOT EXISTS times (
-                game TEXT NOT NULL PRIMARY KEY COLLATE NOCASE,
-                time TEXT NOT NULL
-            )"""
+                    game TEXT NOT NULL PRIMARY KEY COLLATE NOCASE,
+                    time TEXT NOT NULL
+                )"""
             )
 
             await self.db.commit()
