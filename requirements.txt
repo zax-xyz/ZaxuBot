@@ -6,8 +6,9 @@ chardet==3.0.4
 idna==2.9
 idna-ssl==1.1.0
 multidict==4.7.6
+-e git+git@github.com:zaxutic/srcom.py.git@d7d09ddf9040b7d6a50ef257522c29a69ba14801#egg=srcom.py
 termcolor==1.1.0
-twitchio==1.1.0
+twitchio==1.2.3
 typing-extensions==3.7.4.2
 websockets==9.1
 yarl==1.4.2
